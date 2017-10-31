@@ -533,9 +533,10 @@ def api_devdbm_an(an):
 		info += 'paylaod: ' + json.dumps(payload,  indent=4, sort_keys=False, ensure_ascii=False) + '\n'
 		info +=	"Respnose:" + json.dumps(response, indent=4, sort_keys=False, ensure_ascii=False) + '\n'
 		print info
-		return json.dumps(response)
 	else:
-		return "Not Found!"
+		response = {"status":sts['OSA_STATUS_ENOENT'], "payload":{}}
+
+	return json.dumps(response)
 
     
 # main
