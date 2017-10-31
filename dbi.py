@@ -12,9 +12,22 @@ def device_search_device_by_mac(mac):
 	}
 	return ret
 
+# 在设备表中根据uuid找设备,同时返回设备信息,
+# 信息包含 设备uuid, mac, dev_number, key(通讯)
+def device_search_device_by_uuid(uuid):
+	ret = {
+		"uuid"	: "0103043",
+		"mac"		: "0102030405",
+		"dev_number"	:	"01092032",
+		"key"		: "1209102102",
+	}
+	return ret
+
+
+
 # 在人表中根据uuid查找人, 返回人的基本信息
 # 信息包含 人uuid, name, sex
-def device_search_person_by_uuid(uuid):
+def person_search_person_by_uuid(uuid):
 	ret = {
 		"uuid"	: "100203",
 		"name"	:	"json",

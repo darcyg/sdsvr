@@ -7,6 +7,7 @@ import inspect
 import json
 import types
 import dbi
+import re
 from flask import Flask
 
 # variable
@@ -40,256 +41,34 @@ sts = {
 def print_array(ary):
 	for i, item in enumerate(ary):
 		print item
-def valid_mac(mac):
-	return 1
-def valid_uuid(uuid):
-	return 1
-def valid_finger_type(ft):
-	return 1
-def valid_finger(f):
-	return 1
-def valid_cardno(card):
-	return 1
-def valid_opentype(ot):
-	return 1
-def valid_date(d):
-	return 1
-def valid_devnumber(dn):
-	return 1
-def valid_alarmtype(at):
-	return 1
-def valid_hw_ver(hw):
-	return 1
-def valid_sf_ver(sw):
-	return 1
-def valid_battery(b):
-	return 1
-def valid_temperature(t):
-	return 1
-def valid_signal(s):
-	return 1
-def valid_integer(i):
-	return 1
 
 # function arg check
 ##########################################################################
-def check_register_device(payload):
-	ret = 0
-
-	if not payload.has_key('mac'):
-		return ret
-	mac = payload['mac']
-	if not valid_mac(mac):
-		return ret
-
-	if not payload.has_key('uuid'):
-		return ret
-	uuid = payload['uuid']
-	if not valid_uuid(uuid):
-		return ret	
-
+def checkarg(payload, pl):
 	ret = 1
 	
-	return ret
+	for arg in payload:
+		argval = payload[arg]
+		defval = argval['defval']
+		type	 = argval['type']
+		len		 = argval['len']
+		regexp = argval['regexp']
 
-def check_add_fingerprint(payload):
-	ret = 0
+		if not pl.has_key(arg):
+			ret = 0
+			return ret
+	
+		#val = pl[arg]
+		val = pl[arg]['defval']
 
-	if not payload.has_key('mac'):
-		return ret
-	mac = payload['mac']
-	if not valid_mac(mac):
-		return ret
+		
+		p = re.compile(regexp)
+		m = p.match(val)
+		if not m:
+			ret = 0
+			return ret
 
-	if not payload.has_key('person_uuid'):
-		return ret
-	person_uuid = payload['person_uuid']
-	if not valid_uuid(person_uuid):
-		return ret	
-
-	if not payload.has_key('fingerprint_type'):
-		return ret
-	fingerprint_type = payload['fingerprint_type']
-	if not valid_finger_type(fingerprint_type):
-		return ret
-
-	if not payload.has_key('fingerprint'):
-		return ret
-	fingerprint = payload['fingerprint']
-	if not valid_finger(fingerprint):
-		return ret
-
-	ret = 1
-	return ret
-
-def check_report_access(payload):
-	ret = 1
-
-	if not payload.has_key('cardno'):
-		return ret
-	cardno = payload['cardno']
-	if not valid_cardno(cardno):
-		return ret
-
-	if not payload.has_key('mac'):
-		return ret
-	mac = payload['mac']
-	if not valid_mac(mac):
-		return ret
-
-	if not payload.has_key('opentype'):
-		return ret
-	opentype = payload['opentype']
-	if not valid_opentype(opentype):
-		return ret
-
-
-	if not payload.has_key('slide_date'):
-		return ret
-	slide_data = payload['slide_date']
-	if not valid_date(slide_date):
-		return ret
-
-	if not payload.has_key('dev_uuid'):
-		return ret
-	dev_uuid = payload['dev_uuid']
-	if not valid_uuid(dev_uuid):
-		return ret	
-
-	if not payload.has_key('dev_number'):
-		return ret
-	dev_number = payload['dev_number']
-	if not valid_devnumber(dev_number):
-		return ret
-
-	return ret
-
-def check_report_alarm(payload):
-	ret = 1
-
-	if not payload.has_key('occur_date'):
-		return ret
-	occur_date = payload['occur_date']
-	if not valid_date(occur_date):
-		return ret
-
-	if not payload.has_key('type'):
-		return ret
-	alarmtype = payload['type']
-	if not valid_alarmtype(alarmtype):
-		return ret
-
-	if not payload.has_key('mac'):
-		return ret
-	mac = payload['mac']
-	if not valid_mac(mac):
-		return ret
-
-	if not payload.has_key('cardno'):
-		return ret
-	cardno = payload['cardno']
-	if not valid_cardno(cardno):
-		return ret
-
-	if not payload.has_key('dev_uuid'):
-		return ret
-	dev_uuid = payload['dev_uuid']
-	if not valid_uuid(dev_uuid):
-		return ret	
-
-	return ret
-
-def check_report_device_status(payload):
-	ret = 1
-
-	if not payload.has_key('dev_uuid'):
-		return ret
-	dev_uuid = payload['dev_uuid']
-	if not valid_uuid(dev_uuid):
-		return ret	
-
-	if not payload.has_key('mac'):
-		return ret
-	mac = payload['mac']
-	if not valid_mac(mac):
-		return ret
-
-	if not payload.has_key('hw_ver'):
-		return ret
-	hw_ver = payload['hw_ver']
-	if not valid_hw_ver(hw_ver):
-		return ret
-
-	if not payload.has_key('sf_ver'):
-		return ret
-	sf_ver = payload['sf_ver']
-	if not valid_sf_ver(sf_ver):
-		return ret
-
-	if not payload.has_key('battery'):
-		return ret
-	battery = payload['battery']
-	if not valid_battery(battery):
-		return ret
-
-	if not payload.has_key('temperature'):
-		return ret
-	temperature = payload['temperature']
-	if not valid_temperature(temperature):
-		return ret
-
-	if not payload.has_key('signal_'):
-		return ret
-	signal = payload['signal_']
-	if not valid_signal(signal):
-		return ret
-
-	if not payload.has_key('card_capacity'):
-		return ret
-	card_capacity = payload['card_capacity']
-	if not valid_integer(card_capacity):
-		return ret
-
-	if not payload.has_key('whitelist_count'):
-		return ret
-	whitelist_count = payload['whitelist_count']
-	if not valid_integer(whitelist_count):
-		return ret
-
-	if not payload.has_key('finger_capacity'):
-		return ret
-	finger_capacity = payload['finger_capacity']
-	if not valid_integer(finger_capacity):
-		return ret
-
-
-	if not payload.has_key('finger_count'):
-		return ret
-	finger_count = payload['finger_count']
-	if not valid_integer(finger_count):
-		return ret
-
-
-	if not payload.has_key('opened'):
-		return ret
-	opened = payload['opened']
-	if not valid_integer(opened):
-		return ret
-
-	if not payload.has_key('work_mode'):
-		return ret
-	work_mode = payload['work_mode']
-	if not valid_integer(work_mode):
-		return ret
-
-	if not payload.has_key('power_mode'):
-		return ret
-	power_mode = payload['power_mode']
-	if not valid_integer(power_mode):
-		return ret
-
-	return ret
-
+	return ret	
 
 # function
 ##########################################################################
@@ -353,7 +132,7 @@ def report_access(payload):
 	mac				= payload['mac']
 	opentype	= payload['opentype']
 	slide_date= payload['slide_date']
-	dev_uuid	= payload['dev_uuid']
+	dev_uuid	= payload['device_uuid']
 	dev_number= payload['dev_number']
 
 	card = dbi.card_search_card_by_cardno(cardno)
@@ -369,12 +148,12 @@ def report_alarm(payload):
 	occur_date	= payload['occur_date']
 	type_				= payload['type_']
 	mac					= payload['mac']
-	device_uuid	= payload['dev_uuid']
+	device_uuid	= payload['device_uuid']
 	cardno			= payload['cardno']
 
 
 	card = dbi.card_search_card_by_cardno(cardno)
-	device = dbi.device_search_device_by_uuid(dev_uuid)
+	device = dbi.device_search_device_by_uuid(device_uuid)
 
 	dbi.alarm_insert()
 
@@ -402,7 +181,7 @@ def report_device_status(payload):
 	power_mode= payload['power_mode']
 
 	device = dbi.device_search_device_by_uuid(dev_uuid)
-	if not device.mac == mac :
+	if not device['mac'] == mac :
 		ret['status'] = 'OSA_STATUS_EINVAL'
 		return ret
 
@@ -415,14 +194,15 @@ def report_device_status(payload):
 apis = {
 	'register_device'			: {
 		'func':register_device, 
-		'checkarg' : check_register_device,
 		'payload' : {
-			"mac":"0102030405060708",
-			"uuid":""
+			"mac":	{"defval":"0102030405060708", "type":"char", "len":32, "regexp":"^([0-9a-fA-F]{2}){6,8}$"},
+			"uuid":	{"defval":"0120912019",				"type":"char", "len":32, "regexp":""},
 		},
 		'response': {
 			"status" : 0,
-			"payload": { "mac":"01020304050708", "uuid":"12344567",
+			"payload": { 
+				"mac":"01020304050708", 
+				"uuid":"12344567",
 				"dev_number":"1231212",
 				"key":"12122",
 			}
@@ -430,12 +210,11 @@ apis = {
 	},
 	'add_fingerprint'			: {
 		'func': add_fingerprint,
-		'checkarg' : check_add_fingerprint,
 		'payload' : {
-			"mac":"0102030405060708",
-			"person_uuid":"01020304",
-			"fingerprint_type":1,
-			"fingerprint":"12235677"
+			"mac":										{"defval":"0102030405060708", "type":"char", "len":32, "regexp":"^([0-9a-fA-F]{2}){6,8}$"},
+			"person_uuid":						{"defval":"0102030000000001", "type":"char", "len":32, "regexp":""},
+			"fingerprint_type":				{"defval":"1212",							"type":"int",  "len":1,	 "regexp":""},
+			"fingerprint":						{"defval":"012910290129102",  "type":"char", "len":32, "regexp":""},
 		},
 		'response': {
 			"status" : 0,
@@ -451,14 +230,13 @@ apis = {
 	},
 	'report_access'				: {
 		'func':report_access,
-		'checkarg' : check_report_access,
 		'payload': {
-			"cardno":"1212",
-			"mac":"0102030405060708",
-			"opentype":1,
-			"slide_date":"19293949",
-			"dev_uuid":"01020304",
-			"dev_number":"0100003"
+			"cardno":									{"defval":"0102030405060708", "type":"char", "len":32, "regexp":""},
+			"mac":										{"defval":"0102030405060708", "type":"char", "len":32, "regexp":"^([0-9a-fA-F]{2}){6,8}$"},
+			"opentype":								{"defval":"1",								"type":"int",  "len":1,	 "regexp":""},
+			"slide_date":							{"defval":"20170302",					"type":"char", "len":32, "regexp":""},
+			"dev_uuid":								{"defval":"0102030000000001", "type":"char", "len":32, "regexp":""},
+			"dev_number":							{"defval":"12121212",					"type":"char", "len":32, "regexp":""},
 		},
 		"response": {
 			"status": 0,
@@ -468,13 +246,12 @@ apis = {
 	},
 	'report_alarm'				:	{
 		'func': report_alarm,
-		'checkarg' : check_report_alarm,
 		'payload': {
-			"occur_date":"1920330303",
-			"type_":1,
-			"mac":"03030203030",
-			"device_uuid":"3333",
-			"cardno":"12121212",
+			"occur_date":						{"defval":"20170302",					"type":"char", "len":32, "regexp":""},
+			"type_":								{"defval":"1",								"type":"int",  "len":1,	 "regexp":""},
+			"mac":									{"defval":"0102030405060708", "type":"char", "len":32, "regexp":"^([0-9a-fA-F]{2}){6,8}$"},
+			"device_uuid":					{"defval":"0102030000000001", "type":"char", "len":32, "regexp":""},
+			"cardno":								{"defval":"20170302",					"type":"char", "len":32, "regexp":""},
 		},
 		"response": {
 			"status": 0,
@@ -484,24 +261,23 @@ apis = {
 	},
 	'report_device_status': {
 		'func': report_device_status,
-		'checkarg' : check_report_device_status,
 		'payload': {
-			"dev_uuid":"1212121",		
-			"mac":"0102030405060708",
-			"hw_ver":"1.0",
-			"sf_ver":"2.0",
-			"imsi":"what?",
-			"msisdn":"what?",
-			"battery":2.3,
-			"temperature":3.2,
-			"signal_":-20.0,
-			"card_capacity":1000,
-			"whitelist_count":800,
-			"finger_capacity":800,
-			"finger_count":400,
-			"opened":0,
-			"work_mode":1,
-			"power_mode":2
+			"dev_uuid":						{"defval":"0102030000000001", "type":"char", "len":32, "regexp":""},
+			"mac":								{"defval":"0102030405060708", "type":"char", "len":32, "regexp":"^([0-9a-fA-F]{2}){6,8}$"},
+			"hw_ver":							{"defval":"1.0",							"type":"char", "len":32, "regexp":""},
+			"sf_ver":							{"defval":"1.0",							"type":"char", "len":32, "regexp":""},
+			"imsi":								{"defval":"what?",						"type":"char", "len":32, "regexp":""},
+			"msisdn":							{"defval":"what?",						"type":"char", "len":32, "regexp":""},
+			"battery":						{"defval":"2.3",							"type":"float","len":1,	 "regexp":""},
+			"temperature":				{"defval":"3.2",							"type":"float","len":1,	 "regexp":""},
+			"signal_":						{"defval":"-20.0",						"type":"float","len":1,	 "regexp":""},
+			"card_capacity":			{"defval":"1000",							"type":"int",  "len":1,	 "regexp":""},
+			"whitelist_count":		{"defval":"8000",							"type":"int",  "len":1,	 "regexp":""},
+			"finger_capacity":		{"defval":"8000",							"type":"int",  "len":1,	 "regexp":""},
+			"finger_count":				{"defval":"4000",							"type":"int",  "len":1,	 "regexp":""},
+			"opened":							{"defval":"0",								"type":"int",  "len":1,	 "regexp":""},
+			"work_mode":					{"defval":"1",								"type":"int",  "len":1,	 "regexp":""},
+			"power_mode":					{"defval":"0",								"type":"int",  "len":1,	 "regexp":""},
 		},
 		"response": {
 			"status": 0,
@@ -518,14 +294,13 @@ def api_devdbm_an(an):
 		api			 = apis[an]
 		func		 = api['func']
 		payload	 = api['payload']
-		checkarg = api['checkarg']
-		
+		pl			 = api['payload']
 
-		if not checkarg(payload):
+		if not checkarg(payload, pl):
 			status	 = sts['OSA_STATUS_EINVAL']
 			response = {'status' : status, 'payload': {}}
 		else:
-			response = func(payload)
+			response = func(pl)
 			response = api['response']
 
 		info  = '----------------------------------------\n'
