@@ -14,6 +14,8 @@ from flask import Flask
 ##########################################################################
 app = Flask(__name__)
 
+dpath = "./sq.db"
+
 host="0.0.0.0"
 
 port=5000
@@ -40,7 +42,7 @@ sts = {
 ##########################################################################
 def print_array(ary):
 	for i, item in enumerate(ary):
-		print item
+		print(' * ' + item)
 
 # function arg check
 ##########################################################################
@@ -307,7 +309,7 @@ def api_devdbm_an(an):
 		info +=	'Call ' + an + ' with:\n'
 		info += 'paylaod: ' + json.dumps(payload,  indent=4, sort_keys=False, ensure_ascii=False) + '\n'
 		info +=	"Respnose:" + json.dumps(response, indent=4, sort_keys=False, ensure_ascii=False) + '\n'
-		print info
+		print(info)
 	else:
 		response = {"status":sts['OSA_STATUS_ENOENT'], "payload":{}}
 
@@ -317,7 +319,18 @@ def api_devdbm_an(an):
 # main
 ##########################################################################
 if __name__ == "__main__":
+	print('[Api Info]:')
 	print_array(urls)
+	
+	print('[Init DB ' +  dpath + ']:')
+	dbi.init(dpath)
+
+	print('[Run Server]:')
 	app.run(host, port, dflg)
+
+	print("[Deinit DB]:")
+	dbi.deinit()
+
+	print('[Exit]')
 
 
