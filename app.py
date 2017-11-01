@@ -134,7 +134,7 @@ def report_access(payload):
 	mac				= payload['mac']
 	opentype	= payload['opentype']
 	slide_date= payload['slide_date']
-	dev_uuid	= payload['device_uuid']
+	dev_uuid	= payload['dev_uuid']
 	dev_number= payload['dev_number']
 
 	card = dbi.card_search_card_by_cardno(cardno)
