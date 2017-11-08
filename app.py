@@ -86,10 +86,10 @@ def register_device(payload):
 		return ret
 
 	if not uuid == device['uuid']:
-		ret['status'] = 'OSA_STATUS_EINVAL'
+		ret['status'] = sts['OSA_STATUS_EINVAL']
 		return ret
 
-	ret['status'] = 'OSA_STATUS_OK'
+	ret['status'] = sts['OSA_STATUS_OK']
 	ret['payload']['mac']					= payload['mac']
 	ret['payload']['uuid']				= payload['uuid']
 	ret['payload']['dev_number']	= device['dev_number']
@@ -110,19 +110,26 @@ def add_fingerprint(payload):
 
 	if not device or not person :
 		ret['status'] = sts['OSA_STATUS_ENOENT']
-		return 
+		return  ret
+	
+	rc = dbi.update_finger(person_uuid, fingerprint_type, fingerprint)
+	if rc != 0:
+		ret['status'] = sts['OSA_STATUS_ENOENT']
+		return  ret
 
-	dbi.card_insert_card(fingerprint_type, fingerprint)
-	card = dbi.card_search_card_by_type_and_id(fingerprint_type, fingerprint)
+	#person = dbi.person_search_person_by_uuid(person_uuid)
+
+	#dbi.card_insert_card(fingerprint_type, fingerprint)
+	#card = dbi.card_search_card_by_type_and_id(fingerprint_type, fingerprint)
 	
 	
-	ret['status'] = 'OSA_STATUS_OK'
-	ret['payload']['uuid']								= card['uuid']
-	ret['payload']['card_number']					= card['card_number']
-	ret['payload']['card_type']						= card['card_type']
-	ret['payload']['state_']							= card['state_']
-	ret['payload']['effective_start_time']= card['effective_start_time']
-	ret['payload']['effective_end_time']	= card['effective_end_time']
+	ret['status'] = sts['OSA_STATUS_OK']
+	#ret['payload']['uuid']								= card['uuid']
+	#ret['payload']['card_number']					= card['card_number']
+	#ret['payload']['card_type']						= card['card_type']
+	#ret['payload']['state_']							= card['state_']
+	#ret['payload']['effective_start_time']= card['effective_start_time']
+	#ret['payload']['effective_end_time']	= card['effective_end_time']
 	
 
 	return ret
@@ -139,8 +146,11 @@ def report_access(payload):
 
 	card = dbi.card_search_card_by_cardno(cardno)
 	device = dbi.device_search_device_by_mac(mac)
+	if not card or not device:
+		ret['status'] = sts['OSA_STATUS_EINVAL']
+		return ret
 	
-	dbi.access_insert();
+	dbi.access_insert(payload);
 
 	return ret
 
@@ -156,8 +166,11 @@ def report_alarm(payload):
 
 	card = dbi.card_search_card_by_cardno(cardno)
 	device = dbi.device_search_device_by_uuid(device_uuid)
+	if not card or not device:
+		ret['status'] = sts['OSA_STATUS_EINVAL']
+		return ret
 
-	dbi.alarm_insert()
+	dbi.alarm_insert(payload)
 
 	return ret
 
@@ -184,10 +197,12 @@ def report_device_status(payload):
 
 	device = dbi.device_search_device_by_uuid(dev_uuid)
 	if not device['mac'] == mac :
-		ret['status'] = 'OSA_STATUS_EINVAL'
+		ret['status'] = sts['OSA_STATUS_EINVAL']
 		return ret
 
-	dbi.device_status_insert()
+	dbi.device_status_insert(payload)
+
+
 	
 	return ret
 
@@ -290,7 +305,7 @@ apis = {
 }
 
 
-@app.route('/api/dev_dbm/<an>')
+@app.route('/api/dev_dbm/<an>', methods = ['GET', 'POST'])
 def api_devdbm_an(an):
 	if apis.has_key(an):
 		api			 = apis[an]
