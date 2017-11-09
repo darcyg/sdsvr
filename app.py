@@ -8,7 +8,7 @@ import json
 import types
 import dbi
 import re
-from flask import Flask
+from flask import Flask, request
 
 # variable
 ##########################################################################
@@ -48,6 +48,8 @@ def print_array(ary):
 ##########################################################################
 def checkarg(payload, pl):
 	ret = 1
+	print('pl is ' + json.dumps(pl,  indent=4, sort_keys=False, ensure_ascii=False) )
+	print('payload is ' + json.dumps(payload,  indent=4, sort_keys=False, ensure_ascii=False) )
 	
 	for arg in payload:
 		argval = payload[arg]
@@ -56,19 +58,26 @@ def checkarg(payload, pl):
 		len		 = argval['len']
 		regexp = argval['regexp']
 
+		info = 'check arg: ' + arg
+		#print('check arg:' + arg + '...')
+
 		if not pl.has_key(arg):
+			print('No Argment: ' + arg)
 			ret = 0
 			return ret
 	
-		#val = pl[arg]
-		val = pl[arg]['defval']
+		val = pl[arg]
+		#val = pl[arg]['defval']
 
 		
 		p = re.compile(regexp)
 		m = p.match(val)
 		if not m:
+			print('Argment Fromat Error: ' + arg)
 			ret = 0
 			return ret
+		
+		print(info + ' ok')
 
 	return ret	
 
@@ -311,18 +320,19 @@ def api_devdbm_an(an):
 		api			 = apis[an]
 		func		 = api['func']
 		payload	 = api['payload']
-		pl			 = api['payload']
+		pl			 = json.loads(request.form['argments'])
+		#pl = payload
 
 		if not checkarg(payload, pl):
 			status	 = sts['OSA_STATUS_EINVAL']
 			response = {'status' : status, 'payload': {}}
 		else:
-			response = func(pl)
+			#response = func(pl)
 			response = api['response']
 
 		info  = '----------------------------------------\n'
 		info +=	'Call ' + an + ' with:\n'
-		info += 'paylaod: ' + json.dumps(payload,  indent=4, sort_keys=False, ensure_ascii=False) + '\n'
+		info += 'paylaod: ' + json.dumps(pl,  indent=4, sort_keys=False, ensure_ascii=False) + '\n'
 		info +=	"Respnose:" + json.dumps(response, indent=4, sort_keys=False, ensure_ascii=False) + '\n'
 		print(info)
 	else:

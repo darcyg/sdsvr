@@ -7,6 +7,8 @@ test:
 	
 
 run:
+	python app.py
+
 
 clean:
 	rm -rf $(ROOTDIR)/*.pyc
