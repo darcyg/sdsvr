@@ -221,8 +221,8 @@ apis = {
 	'register_device'			: {
 		'func':register_device, 
 		'payload' : {
-			"mac":	{"defval":"0102030405060708", "type":"char", "len":32, "regexp":"^([0-9a-fA-F]{2}){6,8}$"},
-			"uuid":	{"defval":"0120912019",				"type":"char", "len":32, "regexp":""},
+			"mac":	{"defval":"0102030405060708", "type":"char", "len":32, "regexp":"^([0-9a-fA-F]{2}[-|:]{0,1}){6,8}$"},
+			"uuid":	{"defval":"0120912019",				"type":"char", "len":32, "regexp":"^[0-9a-zA-Z]{32}$"}, 
 		},
 		'response': {
 			"status" : 0,
@@ -237,10 +237,10 @@ apis = {
 	'add_fingerprint'			: {
 		'func': add_fingerprint,
 		'payload' : {
-			"mac":										{"defval":"0102030405060708", "type":"char", "len":32, "regexp":"^([0-9a-fA-F]{2}){6,8}$"},
-			"person_uuid":						{"defval":"0102030000000001", "type":"char", "len":32, "regexp":""},
-			"fingerprint_type":				{"defval":"1212",							"type":"int",  "len":1,	 "regexp":""},
-			"fingerprint":						{"defval":"012910290129102",  "type":"char", "len":32, "regexp":""},
+			"mac":										{"defval":"0102030405060708", "type":"char", "len":32, "regexp":"^([0-9a-fA-F]{2}[-|:]{0,1}){6,8}$"},
+			"person_uuid":						{"defval":"0102030000000001", "type":"char", "len":32, "regexp":"^[0-9a-zA-Z]{32}$"},
+			"fingerprint_type":				{"defval":"1212",							"type":"int",  "len":1,	 "regexp":"^[right|left]$"},
+			"fingerprint":						{"defval":"012910290129102",  "type":"char", "len":32, "regexp":"^]0-9z-fA-F]{0,128}"},
 		},
 		'response': {
 			"status" : 0,
@@ -257,12 +257,13 @@ apis = {
 	'report_access'				: {
 		'func':report_access,
 		'payload': {
-			"cardno":									{"defval":"0102030405060708", "type":"char", "len":32, "regexp":""},
-			"mac":										{"defval":"0102030405060708", "type":"char", "len":32, "regexp":"^([0-9a-fA-F]{2}){6,8}$"},
-			"opentype":								{"defval":"1",								"type":"int",  "len":1,	 "regexp":""},
-			"slide_date":							{"defval":"20170302",					"type":"char", "len":32, "regexp":""},
-			"dev_uuid":								{"defval":"0102030000000001", "type":"char", "len":32, "regexp":""},
-			"dev_number":							{"defval":"12121212",					"type":"char", "len":32, "regexp":""},
+			"cardno":									{"defval":"0102030405060708", "type":"char", "len":32, "regexp":"^([0-9]{1,32}$"},
+			"mac":										{"defval":"0102030405060708", "type":"char", "len":32, "regexp":"^([0-9a-fA-F]{2}[-|:]{0,1}){6,8}$"},
+			"opentype":								{"defval":"1",								"type":"int",  "len":1,	 "regexp":"^([C|F|P|A]){1}$"},
+			# %Y-%m-%d %H:%M:%S" 
+			"slide_date":							{"defval":"20170302",					"type":"char", "len":32, "regexp":"^%[0-9]{4}-%[0-9]{2}-%[0-9]{2} %[1]{0,1}[0-9]{1}:%[1]{0,1}[0-9]{1}:%[1]{0,1}[0-9]{1}$"},
+			"dev_uuid":								{"defval":"0102030000000001", "type":"char", "len":32, "regexp":"^[0-9a-zA-Z]{32}$"},
+			"dev_number":							{"defval":"12121212",					"type":"char", "len":32, "regexp":"^[0-1a-zA-Z]{1,}$"}, # not null
 		},
 		"response": {
 			"status": 0,
@@ -273,11 +274,11 @@ apis = {
 	'report_alarm'				:	{
 		'func': report_alarm,
 		'payload': {
-			"occur_date":						{"defval":"20170302",					"type":"char", "len":32, "regexp":""},
-			"type_":								{"defval":"1",								"type":"int",  "len":1,	 "regexp":""},
-			"mac":									{"defval":"0102030405060708", "type":"char", "len":32, "regexp":"^([0-9a-fA-F]{2}){6,8}$"},
-			"device_uuid":					{"defval":"0102030000000001", "type":"char", "len":32, "regexp":""},
-			"cardno":								{"defval":"20170302",					"type":"char", "len":32, "regexp":""},
+			"occur_date":						{"defval":"20170302",					"type":"char", "len":32, "regexp":"^%[0-9]{4}-%[0-9]{2}-%[0-9]{2} %[1]{0,1}[0-9]{1}:%[1]{0,1}[0-9]{1}:%[1]{0,1}[0-9]{1}$"},  # 
+			"type_":								{"defval":"1",								"type":"int",  "len":1,	 "regexp":"^[0-9]{1,2}$"},  # 1/11/2/14
+			"mac":									{"defval":"0102030405060708", "type":"char", "len":32, "regexp":"^([0-9a-fA-F]{2}[-|:]{0,1}){6,8}$"}, 
+			"device_uuid":					{"defval":"0102030000000001", "type":"char", "len":32, "regexp":"^[0-9a-zA-Z]{32}$"},
+			"cardno":								{"defval":"20170302",					"type":"char", "len":32, "regexp":"^([0-9]{1,32}$"},  #
 		},
 		"response": {
 			"status": 0,
@@ -288,22 +289,22 @@ apis = {
 	'report_device_status': {
 		'func': report_device_status,
 		'payload': {
-			"dev_uuid":						{"defval":"0102030000000001", "type":"char", "len":32, "regexp":""},
+			"dev_uuid":						{"defval":"0102030000000001", "type":"char", "len":32, "regexp":"^([0-9]{1,32}$"},
 			"mac":								{"defval":"0102030405060708", "type":"char", "len":32, "regexp":"^([0-9a-fA-F]{2}){6,8}$"},
-			"hw_ver":							{"defval":"1.0",							"type":"char", "len":32, "regexp":""},
-			"sf_ver":							{"defval":"1.0",							"type":"char", "len":32, "regexp":""},
-			"imsi":								{"defval":"what?",						"type":"char", "len":32, "regexp":""},
+			"hw_ver":							{"defval":"1.0",							"type":"char", "len":32, "regexp":"^([0-9a-fA-F]{2}[-|:]{0,1}){6,8}$"}, #010203040506, 01-02-03-04, 01:02:04
+			"sf_ver":							{"defval":"1.0",							"type":"char", "len":32, "regexp":"^[0-9a-zA-F]{0,32}$"}, 
+			"imsi":								{"defval":"what?",						"type":"char", "len":32, "regexp":""}, 
 			"msisdn":							{"defval":"what?",						"type":"char", "len":32, "regexp":""},
-			"battery":						{"defval":"2.3",							"type":"float","len":1,	 "regexp":""},
-			"temperature":				{"defval":"3.2",							"type":"float","len":1,	 "regexp":""},
-			"signal_":						{"defval":"-20.0",						"type":"float","len":1,	 "regexp":""},
-			"card_capacity":			{"defval":"1000",							"type":"int",  "len":1,	 "regexp":""},
-			"whitelist_count":		{"defval":"8000",							"type":"int",  "len":1,	 "regexp":""},
-			"finger_capacity":		{"defval":"8000",							"type":"int",  "len":1,	 "regexp":""},
-			"finger_count":				{"defval":"4000",							"type":"int",  "len":1,	 "regexp":""},
-			"opened":							{"defval":"0",								"type":"int",  "len":1,	 "regexp":""},
-			"work_mode":					{"defval":"1",								"type":"int",  "len":1,	 "regexp":""},
-			"power_mode":					{"defval":"0",								"type":"int",  "len":1,	 "regexp":""},
+			"battery":						{"defval":"2.3",							"type":"float","len":1,	 "regexp":"^[0-9.]{1,32}$"}, #float
+			"temperature":				{"defval":"3.2",							"type":"float","len":1,	 "regexp":"^[0-9.]{1,32}$"}, #float
+			"signal_":						{"defval":"-20.0",						"type":"float","len":1,	 "regexp":"^[0-9.]{1,32}$"}, #float
+			"card_capacity":			{"defval":"1000",							"type":"int",  "len":1,	 "regexp":"^[0-9.]{1,32}$"}, #float
+			"whitelist_count":		{"defval":"8000",							"type":"int",  "len":1,	 "regexp":"^[0-9]{1,32}$"}, #int
+			"finger_capacity":		{"defval":"8000",							"type":"int",  "len":1,	 "regexp":"^[0-9]{1,32}$"}, #int
+			"finger_count":				{"defval":"4000",							"type":"int",  "len":1,	 "regexp":"^[0-9]{1,32}$"}, #int
+			"opened":							{"defval":"0",								"type":"int",  "len":1,	 "regexp":"^[0-9]{1,32}$"}, #int 0|1
+			"work_mode":					{"defval":"1",								"type":"int",  "len":1,	 "regexp":"^[0-9]{1,32}$"}, #int 
+			"power_mode":					{"defval":"0",								"type":"int",  "len":1,	 "regexp":"^[0-9]{1,32}$"}, #int
 		},
 		"response": {
 			"status": 0,
@@ -327,8 +328,8 @@ def api_devdbm_an(an):
 			status	 = sts['OSA_STATUS_EINVAL']
 			response = {'status' : status, 'payload': {}}
 		else:
-			#response = func(pl)
-			response = api['response']
+			response = func(pl)
+			#response = api['response']
 
 		info  = '----------------------------------------\n'
 		info +=	'Call ' + an + ' with:\n'
@@ -340,6 +341,9 @@ def api_devdbm_an(an):
 
 	return json.dumps(response)
 
+@app.route('/', methods = ['GET', 'POST'])
+def api_root():
+	return 'hello python'
     
 # main
 ##########################################################################

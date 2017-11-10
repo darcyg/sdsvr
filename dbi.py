@@ -338,15 +338,15 @@ def access_insert(pl):
 
 	entityType	= DBM_EntityType.DBM_ENTITY_TYPE_ACCESS_RECORD
 	entity			= dbm_entities.DBM_AccessRecord
-	entity.cardno				=	pl['cardno']
+	entity.cardno				=	pl['cardno']                       # NOT NULL
 	entity.person_uuid	=	'' # DBM_CardOwning
 	entity.mac					= pl['mac']
-	entity.opentype			= pl['opentype']
+	entity.opentype			= pl['opentype']                     # NOT NULL
 	entity.area_uuid		= '' #
-	entity.slide_date		= pl['slide_date'] 
+	entity.slide_date		= pl['slide_date']                   # NOT NULL
 	entity.cdate				= '' #.
 	entity.dev_uuid			= pl['dev_uuid'] 
-	entity.dev_number		= pl['dev_number']
+	entity.dev_number		= pl['dev_number']                   # NOT NULL
 	entity.area_code		= '' #.
 	entity.dev_date			= '' #.
 	entity.flag					= '' #.
@@ -369,17 +369,17 @@ def alarm_insert(pl):
 	entityType	= DBM_EntityType.DBM_ENTITY_TYPE_DEVICE_ALARM
 	entity			= dbm_entities.DBM_DeviceAlarm
 	entity.uuid					= ''
-	entity.occur_date		= pl['occur_date']
+	entity.occur_date		= pl['occur_date']    # NOT NULL
 	entity.cdate				= ''
-	entity.type_				= pl['type_']
-	entity.status				= ''
+	entity.type_				= pl['type_']         # NOT NULL
+	entity.status				= ''                  # defaults to `0` on creation
 	entity.udate				= ''
-	entity.mac					= pl['mac']
+	entity.mac					= pl['mac']           # optional
 	entity.area_uuid		= ''
 	entity.account_uuid = ''
 	entity.device_uuid	= pl['device_uuid']
-	entity.remark				= ''
-	entity.cardno				= pl['cardno']
+	entity.remark				= ''        
+	entity.cardno				= pl['cardno']        # do your best
 	entity.flag					= ''
 	entity.sync					= 0
 
@@ -404,8 +404,8 @@ def device_status_insert(pl):
 	entity.status								= ''
 	entity.hwversion						= pl['hw_ver']
 	entity.sfversion						= pl['sf_ver']
-	entity.imsi									= pl['imsi']
-	entity.msidn								= pl['imsi']
+#	entity.imsi									= pl['imsi']
+#	entity.msidn								= pl['imsi']
 	entity.battery							= pl['msisdn']
 	entity.temperature					= pl['temperature']
 	entity.signal_							= pl['signal_']
